@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "Nido",
+    "slug": "spesa-famiglia",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.pisapia.nido"
+    },
+    "android": {
+      "package": "com.pisapia.nido",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#2E5B3E",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "single",
+      "lang": "it",
+      "themeColor": "#F6F2E8",
+      "description": "Cucina, faccende, spese ed eventi: la casa di due persone, in un posto solo."
+    },
+    "plugins": [
+      "expo-font"
+    ]
+  }
+}
