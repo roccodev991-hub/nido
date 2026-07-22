@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   Modal, View, Text, TextInput, ScrollView, TouchableOpacity, Pressable, StyleSheet,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colors, radius, fonts, shadow } from '../theme';
@@ -65,7 +66,9 @@ export default function EventoForm({
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onChiudi}>
-      <View style={s.velo}>
+      {/* Vedi PiattoForm: nelle build native la tastiera copre i campi in
+          basso (ora/luogo/note) senza questo compensatore. */}
+      <KeyboardAvoidingView style={s.velo} behavior="padding">
         <Pressable style={s.sfondo} onPress={onChiudi} />
         <View style={s.pannello}>
           <View style={s.head}>
@@ -200,7 +203,7 @@ export default function EventoForm({
             )}
           </ScrollView>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

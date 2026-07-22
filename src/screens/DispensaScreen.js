@@ -11,10 +11,10 @@ import { db, auth } from '../firebase';
 import { colors, radius, font, fonts, sezioni, statiDispensa, cicloStato } from '../theme';
 import { normalizza, perSchermo } from '../catalogo';
 import { raggruppaPerConservazione, CONSERVAZIONI } from '../conservazione';
-import { consumoDi, dataRiferimento } from '../profili';
+import { dataRiferimento } from '../profili';
 import { stimaGiorni, SOGLIA_USI } from '../stime';
 import { lunedi, ymd, inizioOggi } from '../settimana';
-import { useCategorie, imparaConservazione } from '../frequenti';
+import { useCategorie, imparaConservazione, imparaConsumo } from '../frequenti';
 import ProdottoPicker from '../components/ProdottoPicker';
 import { useDialog } from '../components/Dialog';
 import Hero, { Sheet, SezioniTabs } from '../components/Hero';
@@ -40,11 +40,13 @@ function quandoComprato(ts) {
 export default function DispensaScreen({ famigliaId, sezione, setSezione }) {
   const dialog = useDialog();
   const {
-    frequenti, pronto, categoriaPer, conservazionePer,
+    frequenti, pronto, categoriaPer, conservazionePer, consumoPer,
   } = useCategorie(famigliaId);
   const [prodotti, setProdotti] = useState([]);
   const [nuovo, setNuovo] = useState('');
-  const [nascondiFiniti, setNascondiFiniti] = useState(false);
+  // Di default gli esauriti sono nascosti: col tempo diventano tanti e
+  // seppelliscono ciò che c'è davvero. Un tocco li fa riapparire.
+  const [nascondiFiniti, setNascondiFiniti] = useState(true);
   const [itemSezione, setItemSezione] = useState(null); // prodotto di cui cambiare impostazioni
   const controllo = useRef(false);
 
@@ -116,7 +118,7 @@ export default function DispensaScreen({ famigliaId, sezione, setSezione }) {
       // non dalla foto salvata sul documento: se correggi il reparto di un
       // prodotto già in dispensa, il consumo deve accorgersene.
       const categoria = categoriaPer(p.nome);
-      const consumo = consumoDi(p.nome, categoria);
+      const consumo = consumoPer(p.nome, categoria);
       const nome = normalizza(p.nome);
       const rif = dataRiferimento(p);
       // Giorni di CALENDARIO, non frazioni: comprato ieri sera = 1 giorno fa.
@@ -235,6 +237,12 @@ export default function DispensaScreen({ famigliaId, sezione, setSezione }) {
     imparaConservazione(famigliaId, item.nome, chiave).catch(() => {});
   }
 
+  // Come si consuma, scelto a mano: va solo in `frequenti` (vale per sempre).
+  // Il pannello resta aperto: la spunta si aggiorna da sola via onSnapshot.
+  function cambiaConsumo(item, chiave) {
+    imparaConsumo(famigliaId, item.nome, chiave).catch(() => {});
+  }
+
   // La dispensa della cucina contiene solo alimenti: i prodotti per la casa
   // restano fuori (li ritroverai comunque nella lista della spesa).
   const cucina = prodotti.filter(
@@ -290,7 +298,7 @@ export default function DispensaScreen({ famigliaId, sezione, setSezione }) {
               color={colors.inkSoft}
             />
             <Text style={s.filtroTxt}>
-              {nascondiFiniti ? `Mostra esauriti (${nFiniti})` : 'Nascondi esauriti'}
+              {nascondiFiniti ? 'Mostra esauriti' : 'Nascondi esauriti'}
             </Text>
           </TouchableOpacity>
         )}
@@ -374,12 +382,15 @@ export default function DispensaScreen({ famigliaId, sezione, setSezione }) {
       <ProdottoPicker
         visible={!!itemSezione}
         nome={itemSezione ? itemSezione.nome : ''}
-        categoria={itemSezione ? itemSezione.categoria : null}
         conservazione={itemSezione
           ? (itemSezione.conservazione || conservazionePer(itemSezione.nome, itemSezione.categoria))
           : null}
+        consumo={itemSezione
+          ? consumoPer(itemSezione.nome, categoriaPer(itemSezione.nome))
+          : null}
         accent={mod.accent}
         onConservazione={(k) => cambiaSezione(itemSezione, k)}
+        onConsumo={(k) => cambiaConsumo(itemSezione, k)}
         onChiudi={() => setItemSezione(null)}
       />
     </View>

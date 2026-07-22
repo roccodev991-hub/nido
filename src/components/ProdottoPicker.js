@@ -2,20 +2,26 @@ import { Modal, View, Text, TouchableOpacity, Pressable, StyleSheet } from 'reac
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colors, radius, fonts, shadow } from '../theme';
 import { CONSERVAZIONI } from '../conservazione';
-import { consumoDi } from '../profili';
+import { SCELTE_CONSUMO } from '../profili';
 
-// Impostazioni di un prodotto in dispensa: dove lo tieni. Come si consuma
-// non è più una scelta — lo decide il file di conoscenza — ma lo diciamo,
-// così il cambio di stato non sembra magia.
+// Impostazioni di un prodotto in dispensa: dove lo tieni e come si consuma.
+// Il consumo di default lo decide l'app (profili.js); qui puoi correggerla
+// in parole semplici — serve soprattutto per i prodotti che non conosce,
+// finiti in "altro" e trattati da scorta per prudenza. La scelta va in
+// `frequenti`: vale per sempre, anche per i prossimi acquisti.
 export default function ProdottoPicker({
-  visible, nome, categoria, conservazione, accent, onConservazione, onChiudi,
+  visible, nome, conservazione, consumo, accent,
+  onConservazione, onConsumo, onChiudi,
 }) {
-  const consumo = consumoDi(nome, categoria);
-  const comeSiConsuma = consumo.tipo === 'scorta'
-    ? 'È una scorta: non finisce con un pasto. Diventa «Poco» quando l’app stima che stia calando, in base a ogni quanto lo ricompri.'
-    : consumo.pasti > 0
-      ? `Un piatto che lo usa ${consumo.pasti === 1 ? 'lo esaurisce' : `× ${consumo.pasti} lo esaurisce`}; comunque dopo ~${consumo.giorni} giorni l’app lo segna «Consumato».`
-      : `L’app lo segna «Consumato» dopo ~${consumo.giorni} giorni: il menu non lo tocca.`;
+  const scelto = consumo ? consumo.scelto : null;
+
+  const spiegazione = !consumo
+    ? ''
+    : consumo.tipo === 'scorta'
+      ? 'Non finisce con un pasto: diventa «Poco» quando l’app stima che stia calando, in base a ogni quanto lo ricompri.'
+      : consumo.pasti > 0
+        ? `${consumo.pasti === 1 ? 'Un pasto che lo usa' : `${consumo.pasti} pasti che lo usano`} lo segna${consumo.pasti === 1 ? '' : 'no'} «Consumato»; comunque dopo ~${consumo.giorni} giorni esce da solo.`
+        : `Il menu non lo tocca: l’app lo segna «Consumato» dopo ~${consumo.giorni} giorni.`;
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onChiudi}>
@@ -54,7 +60,33 @@ export default function ProdottoPicker({
           </View>
           <Text style={s.nota}>“Casa” lo toglie dalla dispensa della cucina.</Text>
 
-          <Text style={s.spiega}>{comeSiConsuma}</Text>
+          <Text style={[s.label, { marginTop: 16 }]}>Come si consuma</Text>
+          {Object.entries(SCELTE_CONSUMO).map(([key, sc]) => {
+            const attivo = scelto === key;
+            return (
+              <TouchableOpacity
+                key={key}
+                style={[s.voce, attivo && { backgroundColor: colors.bg }]}
+                onPress={() => onConsumo(attivo ? null : key)}
+                activeOpacity={0.7}
+              >
+                <View style={{ flex: 1 }}>
+                  <Text style={[s.voceTxt, attivo && { color: accent, fontFamily: fonts.semibold }]}>
+                    {sc.label}
+                  </Text>
+                  <Text style={s.voceNota}>{sc.nota}</Text>
+                </View>
+                {attivo && <MaterialCommunityIcons name="check" size={18} color={accent} />}
+              </TouchableOpacity>
+            );
+          })}
+          <Text style={s.nota}>
+            {scelto
+              ? 'Scelto da te — un altro tocco e torna a decidere l’app.'
+              : 'Nessuna scelta: decide l’app dal tipo di prodotto.'}
+          </Text>
+
+          <Text style={s.spiega}>{spiegazione}</Text>
         </View>
       </View>
     </Modal>
@@ -84,9 +116,15 @@ const s = StyleSheet.create({
     borderWidth: 1, borderColor: colors.line,
   },
   chipTxt: { fontFamily: fonts.regular, fontSize: 13, color: colors.inkSoft },
+  voce: {
+    flexDirection: 'row', alignItems: 'center', gap: 10,
+    paddingVertical: 9, paddingHorizontal: 12, borderRadius: radius.lg,
+  },
+  voceTxt: { fontFamily: fonts.medium, fontSize: 15, color: colors.ink },
+  voceNota: { fontFamily: fonts.regular, fontSize: 12, color: colors.inkSoft, marginTop: 1 },
   nota: { fontFamily: fonts.regular, fontSize: 12, color: colors.faint, marginTop: 7 },
   spiega: {
     fontFamily: fonts.regular, fontSize: 12, color: colors.inkSoft,
-    marginTop: 16, lineHeight: 18,
+    marginTop: 10, lineHeight: 18,
   },
 });

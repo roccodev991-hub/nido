@@ -4,10 +4,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   collection, doc, setDoc, getDoc, onSnapshot, increment, serverTimestamp,
+  deleteField,
 } from 'firebase/firestore';
 import { db } from './firebase';
 import { normalizza, categoriaDi, CATEGORIE } from './catalogo';
 import { conservazioneDi, CONSERVAZIONI } from './conservazione';
+import { consumoDi, SCELTE_CONSUMO } from './profili';
 
 export function frequentiRef(famigliaId) {
   return collection(db, 'famiglie', famigliaId, 'frequenti');
@@ -48,8 +50,18 @@ export function useCategorie(famigliaId) {
     return conservazioneDi(nome || '', categoria);
   }, [mappa]);
 
+  // Come si consuma: prima la scelta fatta a mano nel pannello (frequenti),
+  // poi la classificazione automatica. `scelto` dice se è una scelta tua.
+  const consumoPer = useMemo(() => (nome, categoria) => {
+    const f = mappa.get(normalizza(nome || ''));
+    if (f && f.consumo && SCELTE_CONSUMO[f.consumo]) {
+      return { ...SCELTE_CONSUMO[f.consumo].valore, scelto: f.consumo };
+    }
+    return { ...consumoDi(nome || '', categoria), scelto: null };
+  }, [mappa]);
+
   return {
-    frequenti, pronto, categoriaPer, conservazionePer,
+    frequenti, pronto, categoriaPer, conservazionePer, consumoPer,
   };
 }
 
@@ -106,6 +118,18 @@ export async function imparaCategoria(famigliaId, nome, categoria) {
   await setDoc(
     doc(db, 'famiglie', famigliaId, 'frequenti', id),
     { nome, categoria },
+    { merge: true },
+  );
+}
+
+// Memorizza come si consuma, scelto a mano dal pannello (chiave di
+// SCELTE_CONSUMO). Con null si torna alla classificazione automatica.
+export async function imparaConsumo(famigliaId, nome, chiave) {
+  const id = idDa(nome);
+  if (!id) return;
+  await setDoc(
+    doc(db, 'famiglie', famigliaId, 'frequenti', id),
+    { nome, consumo: chiave || deleteField() },
     { merge: true },
   );
 }

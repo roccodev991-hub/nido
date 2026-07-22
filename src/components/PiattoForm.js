@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, ScrollView, Modal, Pressable, StyleSheet,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colors, radius, font, fonts, shadow } from '../theme';
@@ -91,7 +92,11 @@ export default function PiattoForm({
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onChiudi}>
-      <View style={s.velo}>
+      {/* Nelle build native (edge-to-edge) Android non ridimensiona più la
+          finestra quando esce la tastiera: senza questo, i campi in basso
+          finiscono coperti. Su Expo Go sembrava a posto solo perché lì la
+          finestra si restringe da sola. */}
+      <KeyboardAvoidingView style={s.velo} behavior="padding">
         <Pressable style={s.sfondo} onPress={onChiudi} />
         <View style={s.foglio}>
           <View style={s.head}>
@@ -219,7 +224,7 @@ export default function PiattoForm({
             <Text style={s.salvaTxt}>{testoSalva || 'Salva piatto'}</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

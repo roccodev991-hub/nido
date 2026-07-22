@@ -148,6 +148,33 @@ export function consumoDi(nome, categoria) {
   return { tipo: 'scorta' };
 }
 
+// Le scelte offerte nel pannello del prodotto, in parole umane.
+// Servono soprattutto per i prodotti che l'app non conosce (finiti in
+// "altro" e trattati da scorta per prudenza): la scelta va in `frequenti`
+// e da lì vince per sempre sulla classificazione automatica.
+export const SCELTE_CONSUMO = {
+  pasto1: {
+    label: 'Un pasto lo finisce',
+    nota: 'carne, pesce, zucchine…',
+    valore: { tipo: 'fresco', pasti: 1, giorni: 10 },
+  },
+  pasti2: {
+    label: 'Dura un paio di pasti',
+    nota: 'insalata, pomodori, cicoria…',
+    valore: { tipo: 'fresco', pasti: 2, giorni: 14 },
+  },
+  tempo: {
+    label: 'Finisce da sé, col tempo',
+    nota: 'frutta, latte: il menu non c’entra',
+    valore: { tipo: 'fresco', pasti: 0, giorni: 14 },
+  },
+  scorta: {
+    label: 'È una scorta, dura a lungo',
+    nota: 'pasta, scatolame, surgelati',
+    valore: { tipo: 'scorta' },
+  },
+};
+
 // Data di riferimento di un prodotto in dispensa (acquisto, o inserimento).
 export function dataRiferimento(item) {
   const ts = item.compratoIl || item.creato;
