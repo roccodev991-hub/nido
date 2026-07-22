@@ -51,6 +51,9 @@ Verificare sempre che il nome di un'icona esista nel glyphmap prima di usarlo:
 App.js                     login, famiglia, menu ☰ moduli, dialogo famiglia, export dati
                            `vaiA(modulo, sezione)` → la home apre il punto esatto
 firestore.rules            regole di sicurezza (da deployare a parte)
+                           repo: github.com/roccodev991-hub/nido (privato, branch master)
+                           ⚠️ sta su OneDrive: se i salvataggi git si comportano in modo
+                           strano, sospetta il conflitto OneDrive↔Git prima d'altro
 eas.json                   profili di build: `apk` (APK sideload) e `production` (AAB)
                            ⚠️ `appVersionSource: local` → alzare `android.versionCode`
                            in app.json a ogni build, o Android rifiuta l'installazione
