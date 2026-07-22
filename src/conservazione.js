@@ -77,6 +77,11 @@ const NOTI = {
   // travaso 2026-07
   'tempeh': 'frigo',            // fresco, va in frigo anche se sta col reparto dispensa
   'pesce surgelato': 'freezer', // vostra correzione dall'app
+  // ampliamento 2026-07: freschi che il reparto dispensa manderebbe allo scaffale
+  'tofu': 'frigo',
+  'pasta sfoglia': 'frigo',
+  'pasta frolla': 'frigo',
+  'burro di arachidi': 'dispensa', // la parola "burro" lo manderebbe in frigo
   'spaghetti': 'dispensa',
   'stracchino': 'frigo',
   'sugo': 'dispensa',

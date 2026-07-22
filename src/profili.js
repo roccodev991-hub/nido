@@ -40,8 +40,21 @@ const FRESCHI = {
   asparagi: { pasti: 2, giorni: 14 },
   'verdure a foglia': { pasti: 2, giorni: 14 },
 
+  // — Ampliamento 2026-07: verdure —
+  verza: { pasti: 2, giorni: 14 },
+  cavolfiore: { pasti: 1, giorni: 10 },
+  radicchio: { pasti: 2, giorni: 14 },
+  scarola: { pasti: 2, giorni: 14 },
+  carciofi: { pasti: 1, giorni: 7 }, carciofo: { pasti: 1, giorni: 7 },
+  fagiolini: { pasti: 1, giorni: 7 },
+  'cime di rapa': { pasti: 1, giorni: 7 }, friarielli: { pasti: 1, giorni: 7 },
+  ravanelli: { pasti: 2, giorni: 10 },
+  valeriana: { pasti: 2, giorni: 7 }, songino: { pasti: 2, giorni: 7 },
+
   // — Erbe: un pizzico basta a un pasto, ma vanno male in fretta —
   basilico: { pasti: 1, giorni: 7 }, prezzemolo: { pasti: 1, giorni: 7 },
+  salvia: { pasti: 1, giorni: 7 }, menta: { pasti: 1, giorni: 7 },
+  timo: { pasti: 1, giorni: 7 },
 
   // — Scorta fresca di casa: il menu non la tocca, dura a lungo —
   patate: { pasti: 0, giorni: 30 }, patata: { pasti: 0, giorni: 30 },
@@ -68,11 +81,26 @@ const FRESCHI = {
   pere: { pasti: 0, giorni: 20 }, pera: { pasti: 0, giorni: 20 },
   kiwi: { pasti: 0, giorni: 20 },
   frutta: { pasti: 0, giorni: 10 }, // generico: il menu non la tocca
+  // ampliamento 2026-07: frutta
+  prugne: { pasti: 0, giorni: 6 }, susine: { pasti: 0, giorni: 6 },
+  fichi: { pasti: 0, giorni: 4 }, cachi: { pasti: 0, giorni: 6 },
+  mango: { pasti: 0, giorni: 6 }, ananas: { pasti: 0, giorni: 8 },
+  lamponi: { pasti: 0, giorni: 4 }, mirtilli: { pasti: 0, giorni: 6 },
+  more: { pasti: 0, giorni: 4 },
+  pompelmo: { pasti: 0, giorni: 30 }, melograno: { pasti: 0, giorni: 20 },
+  castagne: { pasti: 0, giorni: 30 },
 
   // — Latticini freschi da piatto: un pasto li finisce —
   mozzarella: { pasti: 1, giorni: 10 },
   ricotta: { pasti: 1, giorni: 10 },
   panna: { pasti: 1, giorni: 10 },
+  burrata: { pasti: 1, giorni: 3 }, stracciatella: { pasti: 1, giorni: 3 },
+  besciamella: { pasti: 1, giorni: 7 },
+  feta: { pasti: 2, giorni: 21 },
+  // tofu e tempeh: freschi da frigo, un piatto li finisce (confezionati durano)
+  tofu: { pasti: 1, giorni: 14 }, tempeh: { pasti: 1, giorni: 14 },
+  // molluschi: vivi, vanno cucinati subito
+  cozze: { pasti: 1, giorni: 2 }, vongole: { pasti: 1, giorni: 2 },
 
   // — Latticini freschi da colazione/spuntino: solo a tempo —
   latte: { pasti: 0, giorni: 10 },
@@ -82,6 +110,8 @@ const FRESCHI = {
   mascarpone: { pasti: 0, giorni: 10 },
   scamorza: { pasti: 0, giorni: 10 },
   provola: { pasti: 0, giorni: 10 },
+  crescenza: { pasti: 0, giorni: 10 }, caprino: { pasti: 0, giorni: 10 },
+  kefir: { pasti: 0, giorni: 10 },
 };
 
 // Nomi composti che il match per parola sbaglierebbe: "latte di mandorla"
@@ -99,15 +129,24 @@ const ECCEZIONI = {
   'pomodori secchi': 'scorta',
   'pomodoro secco': 'scorta',
   'funghi secchi': 'scorta',
+  // conserve di pomodoro: il match per parola aggancerebbe "pomodoro/i" fresco
+  'passata di pomodoro': 'scorta',
+  'polpa di pomodoro': 'scorta',
+  'pomodori pelati': 'scorta',
+  'succo di frutta': 'scorta',
   'tonno fresco': { pasti: 1, giorni: 2 },
   'insalata di mare': { pasti: 1, giorni: 3 },
   'insalata di riso': { pasti: 1, giorni: 3 },
+  // fresche da frigo che il reparto dispensa darebbe per scorte
+  'pasta sfoglia': { pasti: 1, giorni: 10 },
+  'pasta frolla': { pasti: 1, giorni: 10 },
 };
 
 // Salumi e conserve: stanno nel reparto carne/pesce ma durano come scorte.
 const CONSERVATI = [
   'tonno', 'prosciutto', 'salame', 'bresaola', 'speck', 'mortadella', 'wurstel',
   'salumi', 'affettati', // generici
+  'pancetta', 'guanciale', 'baccalà', // ampliamento 2026-07
 ];
 
 // Confronto per parola intera: evita che "mela" corrisponda a "melanzana".

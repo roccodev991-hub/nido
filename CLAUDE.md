@@ -89,7 +89,7 @@ src/screens/
 
 | File | Contenuto |
 |---|---|
-| `src/catalogo.js` | 258 prodotti → reparto (frutta-verdura, latticini, …) + `categoriaDi()` + `perSchermo()` |
+| `src/catalogo.js` | 375 prodotti → reparto (frutta-verdura, latticini, …) + `categoriaDi()` + `perSchermo()` |
 | `src/conservazione.js` | 76 prodotti → frigo/dispensa/freezer (dall'Excel dell'utente) |
 | `src/profili.js` | `consumoDi()` → come si consuma: `{tipo:'fresco',pasti,giorni}` o `{tipo:'scorta'}` |
 | `src/stime.js` | giorni stimati prima che una scorta finisca (cold start) |

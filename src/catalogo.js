@@ -33,6 +33,14 @@ const PRODOTTI = {
     // generici: usali nei piatti quando l'ingrediente è intercambiabile
     'verdure', 'verdura', 'frutta', 'insalata mista', 'contorno',
     'cetriolo', 'cetrioli', 'rucola',
+    // ampliamento 2026-07: verdure
+    'asparagi', 'verza', 'cavolfiore', 'radicchio', 'scarola', 'carciofi', 'carciofo',
+    'fagiolini', 'cime di rapa', 'friarielli', 'ravanelli', 'valeriana', 'songino',
+    // ampliamento 2026-07: frutta
+    'prugne', 'susine', 'fichi', 'cachi', 'mango', 'ananas', 'pompelmo', 'melograno',
+    'lamponi', 'mirtilli', 'more', 'castagne',
+    // ampliamento 2026-07: erbe fresche
+    'salvia', 'menta', 'timo',
   ],
   latticini: [
     'latte', 'yogurt', 'burro', 'formaggio', 'parmigiano', 'mozzarella', 'ricotta', 'uova',
@@ -40,6 +48,9 @@ const PRODOTTI = {
     'scamorza', 'provola', 'emmental', 'fontina',
     // travaso 2026-07
     'cheddar', 'pecorino', 'pecorino romano', 'yogurt greco',
+    // ampliamento 2026-07
+    'burrata', 'stracciatella', 'feta', 'crescenza', 'caprino', 'taleggio', 'brie',
+    'camembert', 'asiago', 'kefir', 'besciamella',
   ],
   'carne-pesce': [
     'pollo', 'manzo', 'maiale', 'salsiccia', 'salsicce', 'prosciutto', 'tonno', 'salmone',
@@ -49,12 +60,18 @@ const PRODOTTI = {
     'orata', 'sgombro', 'carne rossa', 'fesa di tacchino', 'pesce surgelato',
     // generici
     'salumi', 'affettati', 'pesce bianco', 'carne bianca',
+    // ampliamento 2026-07
+    'agnello', 'coniglio', 'spezzatino', 'branzino', 'spigola', 'trota', 'pesce spada',
+    'baccalà', 'polpo', 'calamari', 'seppie', 'cozze', 'vongole', 'gamberetti',
+    'pancetta', 'guanciale',
   ],
   'pane-forno': [
     'pane', 'pancarre', 'grissini', 'crackers', 'fette biscottate', 'focaccia', 'piadina',
     'cornetti', 'brioche', 'baguette', 'michette',
     // travaso 2026-07
     'toast', 'pane vecchio', 'tortillas',
+    // ampliamento 2026-07
+    'piadine', 'panini', 'ciabatta', 'rosette', 'taralli', 'pizza',
   ],
   dispensa: [
     'pasta', 'riso', 'sugo', 'pelati', 'passata', 'olio', 'sale', 'zucchero', 'farina',
@@ -66,16 +83,27 @@ const PRODOTTI = {
     'farina di ceci', 'salsa di soia', 'maionese', 'senape', 'concentrato di pomodoro',
     'pepe', 'peperoncino', 'cumino', 'curcuma', 'coriandolo', 'rosmarino', 'chipotle',
     'ravioli cinesi', 'tempeh',
+    // ampliamento 2026-07
+    'penne', 'fusilli', 'rigatoni', 'linguine', 'tagliatelle', 'lasagne', 'orzo', 'quinoa',
+    'semola', 'piselli', 'ketchup', 'origano', 'noci', 'mandorle', 'nocciole', 'pistacchi',
+    'arachidi', 'pinoli', 'datteri', 'tofu', 'pasta sfoglia', 'pasta frolla',
+    'passata di pomodoro', 'polpa di pomodoro', 'pomodori pelati',
   ],
   colazione: [
     'biscotti', 'caffe', 'caffè', 'the', 'tè', 'miele', 'marmellata', 'cereali', 'nutella',
     'fette', 'merendine', 'cioccolato', 'zucchero a velo', 'lievito', 'wafer', 'crackers dolci',
+    // ampliamento 2026-07
+    'muesli', 'fiocchi di avena', 'cacao', 'orzo solubile', 'camomilla', 'tisane',
+    'burro di arachidi',
   ],
   bevande: [
     'acqua', 'vino', 'birra', 'coca cola', 'coca', 'aranciata', 'succo', 'succhi', 'spremuta',
     'latte di soia', 'bibite', 'tè freddo', 'the freddo', 'gassosa', 'tonica', 'redbull',
     // travaso 2026-07
     'vino bianco', 'marsala',
+    // ampliamento 2026-07 (i "latte di X" qui, non fra i latticini: sono UHT)
+    'vino rosso', 'prosecco', 'spumante', 'latte di mandorla', 'latte di avena',
+    'latte di riso',
   ],
   casa: [
     'detersivo', 'sapone', 'shampoo', 'carta igienica', 'scottex', 'tovaglioli', 'sacchetti',
@@ -94,6 +122,8 @@ const PRODOTTI = {
     'rasoi', 'schiuma da barba', 'assorbenti', 'cotton fioc', 'crema idratante',
     // carta e cucina
     'carta forno', 'sacchetti gelo', 'sacchi immondizia', 'fazzoletti',
+    // ampliamento 2026-07
+    'alcol', 'insetticida', 'lampadine', 'pile', 'batterie', 'strofinacci',
   ],
 };
 
