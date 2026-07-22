@@ -178,8 +178,14 @@ con `vaiA(modulo, sezione)`.
   La mappa `ECCEZIONI` (nome intero, vince su tutto) copre i composti che il match per
   parola sbaglierebbe: "latte di mandorla"≠latte, "tonno fresco"≠tonno in scatola,
   "frutta secca"≠frutta. Se compare un nuovo caso storto, si aggiunge lì.
-  Il pannello del prodotto **non fa più scegliere il profilo**: mostra solo dove lo tieni
-  e una riga che spiega come si consuma (letta da `consumoDi`).
+  Il pannello del prodotto offre una correzione **in parole umane** (`SCELTE_CONSUMO`:
+  un pasto / un paio di pasti / col tempo / scorta): la scelta va in `frequenti`
+  (`imparaConsumo`, campo `consumo`) e da lì `consumoPer()` la fa vincere per sempre
+  sull'automatico. Serve soprattutto per i prodotti sconosciuti, che finiscono in "altro"
+  e per prudenza sono trattati da scorta. Toccare la voce attiva torna all'automatico.
+  Nei modali con campi in basso serve `KeyboardAvoidingView` (behavior "padding"): nelle
+  build native (edge-to-edge) Android non ridimensiona la finestra con la tastiera —
+  su Expo Go il problema NON si vede, quindi va provato sull'APK.
 - Quando una scorta diventa "Poco": **prima il ritmo imparato** dai riacquisti
   (`intervalloMedio`), altrimenti **usi nei menu** (soglia 6) e **tempo stimato** come rete.
 - ⚠️ **Non usare mai la parola "scadenza"** nei testi utente: l'app non sa se qualcosa è
