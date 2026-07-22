@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, FlatList, ScrollView, Modal, Pressable,
   StyleSheet,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import {
@@ -11,6 +12,7 @@ import {
 import { db, auth } from '../firebase';
 import { colors, radius, font, fonts, shadow, sezioni } from '../theme';
 import { normalizza, perSchermo } from '../catalogo';
+import { COMPENSA_TASTIERA } from '../tastiera';
 import { useCategorie } from '../frequenti';
 import {
   piattiRef, importaPiattiSeed, deduciTipiMancanti, stagioneCorrente, TIPI, IMPEGNI,
@@ -596,7 +598,7 @@ export default function MenuScreen({ famigliaId, sezione, setSezione }) {
 
       {/* MODALE: scegli cosa mettere nello slot (o gestisci il ricettario) */}
       <Modal visible={picker} transparent animationType="slide" onRequestClose={() => setPicker(false)}>
-        <View style={s.velo}>
+        <KeyboardAvoidingView style={s.velo} behavior={COMPENSA_TASTIERA}>
           <Pressable style={s.sfondo} onPress={() => setPicker(false)} />
           <View style={s.foglio}>
             <View style={s.foglioHead}>
@@ -670,7 +672,7 @@ export default function MenuScreen({ famigliaId, sezione, setSezione }) {
                 <FlatList
                   data={piattiFiltrati}
                   keyExtractor={(i) => i.id}
-                  style={{ maxHeight: 340 }}
+                  style={{ maxHeight: 300 }}
                   keyboardShouldPersistTaps="handled"
                   renderItem={({ item }) => {
                     const et = [
@@ -732,7 +734,7 @@ export default function MenuScreen({ famigliaId, sezione, setSezione }) {
               </>
             )}
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
 
       {/* FORM: crea o modifica un piatto */}

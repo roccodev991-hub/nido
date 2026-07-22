@@ -6,6 +6,7 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colors, radius, font, fonts, shadow } from '../theme';
 import { OCCASIONI, TIPI, IMPEGNI, STAGIONI } from '../piatti';
+import { COMPENSA_TASTIERA } from '../tastiera';
 
 // Riga di chip a scelta singola.
 function ChipRow({ etichetta, opzioni, valore, onScegli, accent, soft }) {
@@ -99,7 +100,7 @@ export default function PiattoForm({
           finestra quando esce la tastiera: senza questo, i campi in basso
           finiscono coperti. Su Expo Go sembrava a posto solo perché lì la
           finestra si restringe da sola. */}
-      <KeyboardAvoidingView style={s.velo} behavior="padding">
+      <KeyboardAvoidingView style={s.velo} behavior={COMPENSA_TASTIERA}>
         <Pressable style={s.sfondo} onPress={onChiudi} />
         <View style={s.foglio}>
           <View style={s.head}>

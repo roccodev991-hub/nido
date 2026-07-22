@@ -7,6 +7,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colors, radius, fonts, shadow } from '../theme';
 import MeseGriglia from './MeseGriglia';
 import { inizioGiorno } from '../ricorrenza';
+import { COMPENSA_TASTIERA } from '../tastiera';
 
 // Crea o modifica un evento. Solo il nome è obbligatorio: ora, luogo e note
 // si riempiono quando servono (per un compleanno l'ora non ha senso).
@@ -68,7 +69,7 @@ export default function EventoForm({
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onChiudi}>
       {/* Vedi PiattoForm: nelle build native la tastiera copre i campi in
           basso (ora/luogo/note) senza questo compensatore. */}
-      <KeyboardAvoidingView style={s.velo} behavior="padding">
+      <KeyboardAvoidingView style={s.velo} behavior={COMPENSA_TASTIERA}>
         <Pressable style={s.sfondo} onPress={onChiudi} />
         <View style={s.pannello}>
           <View style={s.head}>
