@@ -19,8 +19,10 @@ import {
 
 const mod = modules.home;
 
-// Quanti prodotti "stanno finendo" mostrare prima di riassumere.
+// Quanto mostrare prima di riassumere: la home è un riepilogo, non una
+// seconda copia delle liste.
 const MAX_FINISCONO = 4;
+const MAX_FACCENDE = 3;
 
 // Saluto in base all'ora: la prima riga che leggi deve suonare come casa tua.
 function saluto() {
@@ -216,7 +218,7 @@ export default function HomeScreen({ famigliaId, vaiA }) {
               badge={daFare.length}
               onApri={() => vaiA('tasks', 'faccende')}
             >
-              {daFare.map((t) => {
+              {daFare.slice(0, MAX_FACCENDE).map((t) => {
                 const stato = quandoScade(t.scadenza || oggi);
                 const colore = stato.gruppo === 'ritardo' ? colors.tomato : sezioniTasks.faccende.accent;
                 const diChi = tocca(t.storico, nomi);
@@ -239,6 +241,20 @@ export default function HomeScreen({ famigliaId, vaiA }) {
                   </View>
                 );
               })}
+              {daFare.length > MAX_FACCENDE && (
+                <TouchableOpacity
+                  style={s.altre}
+                  onPress={() => vaiA('tasks', 'faccende')}
+                  activeOpacity={0.7}
+                >
+                  <Text style={font.small}>
+                    {daFare.length - MAX_FACCENDE === 1
+                      ? 'e un’altra da fare'
+                      : `e altre ${daFare.length - MAX_FACCENDE} da fare`}
+                  </Text>
+                  <MaterialCommunityIcons name="chevron-right" size={16} color={colors.inkSoft} />
+                </TouchableOpacity>
+              )}
             </Blocco>
           )}
 
@@ -352,6 +368,10 @@ const s = StyleSheet.create({
   },
   faccenda: {
     flexDirection: 'row', alignItems: 'center', gap: 11, paddingVertical: 5,
+  },
+  altre: {
+    flexDirection: 'row', alignItems: 'center', gap: 4,
+    paddingTop: 8, paddingLeft: 37, // allineata al testo delle faccende
   },
   evento: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 4 },
   puntoEvento: { width: 7, height: 7, borderRadius: 3.5, marginLeft: 4 },

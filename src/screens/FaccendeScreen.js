@@ -114,8 +114,12 @@ export default function FaccendeScreen({ famigliaId, sezione, setSezione }) {
     });
   }
 
+  // Con `dati` nasce dal catalogo (già col suo ritmo), senza dal testo scritto.
+  // Va chiamata sempre come `aggiungi()`: passandola dritta a onPress si
+  // beccherebbe l'evento del tocco al posto dei dati — per questo il controllo
+  // è su `dati.nome` e non sul solo `dati`.
   function aggiungi(dati) {
-    if (dati) {
+    if (dati && dati.nome) {
       crea(dati);
     } else {
       const r = RAPIDE.find((x) => x.key === ricorrenza) || RAPIDE[2];
@@ -267,7 +271,7 @@ export default function FaccendeScreen({ famigliaId, sezione, setSezione }) {
 
       <Sheet>
         <View style={s.addRow}>
-          <TouchableOpacity onPress={aggiungi} activeOpacity={0.7} hitSlop={8}>
+          <TouchableOpacity onPress={() => aggiungi()} activeOpacity={0.7} hitSlop={8}>
             <MaterialCommunityIcons name="plus" size={22} color={sz.accent} />
           </TouchableOpacity>
           <TextInput
@@ -276,7 +280,7 @@ export default function FaccendeScreen({ famigliaId, sezione, setSezione }) {
             placeholderTextColor={colors.inkSoft}
             value={nuovo}
             onChangeText={setNuovo}
-            onSubmitEditing={aggiungi}
+            onSubmitEditing={() => aggiungi()}
             returnKeyType="done"
             blurOnSubmit={false}
           />

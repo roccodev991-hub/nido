@@ -2,7 +2,7 @@
   "expo": {
     "name": "Nido",
     "slug": "spesa-famiglia",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -12,7 +12,7 @@
     },
     "android": {
       "package": "com.pisapia.nido",
-      "versionCode": 1,
+      "versionCode": 3,
       "adaptiveIcon": {
         "backgroundColor": "#2E5B3E",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -30,6 +30,11 @@
     },
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "0fc25d80-270f-40f1-bc2e-965ba68828ff"
+      }
+    }
   }
 }

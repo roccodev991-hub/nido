@@ -30,6 +30,8 @@ const PRODOTTI = {
     // travaso 2026-07
     'prezzemolo', 'cicoria', 'cicorie', 'pomodorini', 'cavolo', 'porro', 'porri',
     'patata dolce', 'zenzero', 'verdure a foglia', 'bietole',
+    // generici: usali nei piatti quando l'ingrediente è intercambiabile
+    'verdure', 'verdura', 'frutta', 'insalata mista', 'contorno',
   ],
   latticini: [
     'latte', 'yogurt', 'burro', 'formaggio', 'parmigiano', 'mozzarella', 'ricotta', 'uova',
@@ -44,6 +46,8 @@ const PRODOTTI = {
     'mortadella', 'salame', 'vitello', 'hamburger', 'cotolette', 'merluzzo', 'alici',
     // travaso 2026-07
     'orata', 'sgombro', 'carne rossa', 'fesa di tacchino', 'pesce surgelato',
+    // generici
+    'salumi', 'affettati', 'pesce bianco', 'carne bianca',
   ],
   'pane-forno': [
     'pane', 'pancarre', 'grissini', 'crackers', 'fette biscottate', 'focaccia', 'piadina',

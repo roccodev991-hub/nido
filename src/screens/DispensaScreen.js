@@ -11,10 +11,10 @@ import { db, auth } from '../firebase';
 import { colors, radius, font, fonts, sezioni, statiDispensa, cicloStato } from '../theme';
 import { normalizza, perSchermo } from '../catalogo';
 import { raggruppaPerConservazione, CONSERVAZIONI } from '../conservazione';
-import { giorniDi, dataRiferimento } from '../profili';
+import { consumoDi, dataRiferimento } from '../profili';
 import { stimaGiorni, SOGLIA_USI } from '../stime';
 import { lunedi, ymd, inizioOggi } from '../settimana';
-import { useCategorie, imparaConservazione, imparaProfilo } from '../frequenti';
+import { useCategorie, imparaConservazione } from '../frequenti';
 import ProdottoPicker from '../components/ProdottoPicker';
 import { useDialog } from '../components/Dialog';
 import Hero, { Sheet, SezioniTabs } from '../components/Hero';
@@ -40,7 +40,7 @@ function quandoComprato(ts) {
 export default function DispensaScreen({ famigliaId, sezione, setSezione }) {
   const dialog = useDialog();
   const {
-    frequenti, pronto, categoriaPer, conservazionePer, profiloPer,
+    frequenti, pronto, categoriaPer, conservazionePer,
   } = useCategorie(famigliaId);
   const [prodotti, setProdotti] = useState([]);
   const [nuovo, setNuovo] = useState('');
@@ -76,7 +76,7 @@ export default function DispensaScreen({ famigliaId, sezione, setSezione }) {
     const oggi = inizioOggi();
 
     // 1) Raccolgo i pasti già passati delle ultime settimane, con la loro data:
-    //    servono sia a consumare i monouso, sia a contare gli usi delle scorte.
+    //    servono sia a consumare i freschi, sia a contare gli usi delle scorte.
     const pastiPassati = []; // { quando: ms, ingredienti: Set }
     const inizio = lunedi();
     const chiavi = [];
@@ -112,7 +112,7 @@ export default function DispensaScreen({ famigliaId, sezione, setSezione }) {
     let modifiche = 0;
     for (const p of prodotti) {
       if ((p.stato || 'pieno') !== 'pieno') continue;
-      const profilo = p.profilo || profiloPer(p.nome, p.categoria);
+      const consumo = consumoDi(p.nome, p.categoria);
       const nome = normalizza(p.nome);
       const rif = dataRiferimento(p);
       const giorniPassati = rif ? (oggi - rif) / 86400000 : 0;
@@ -121,7 +121,7 @@ export default function DispensaScreen({ famigliaId, sezione, setSezione }) {
         ? pastiPassati.filter((m) => m.quando > rif && m.ingredienti.has(nome)).length
         : 0;
 
-      if (profilo === 'scorta') {
+      if (consumo.tipo === 'scorta') {
         // Scorta → "Poco". Se conosco il tuo ritmo uso solo quello,
         // altrimenti mi baso sugli usi e, come rete, sul tempo stimato.
         const imparato = mappaFrequenti.get(nome);
@@ -138,11 +138,12 @@ export default function DispensaScreen({ famigliaId, sezione, setSezione }) {
         continue;
       }
 
-      // Fresco → "Consumato": il pasto che lo usava è passato, oppure il tempo stimato.
-      const daPasto = profilo === 'monouso' && usi > 0;
-      const giorni = giorniDi(p.nome, profilo);
-      const finito = !daPasto && giorni && rif && giorniPassati >= giorni;
-      if (daPasto || finito) {
+      // Fresco → "Consumato": abbastanza pasti l'hanno usato (con pasti > 0),
+      // oppure è passato il tempo di rete. `pasti: 0` = il menu non lo tocca.
+      if (!rif) continue;
+      const daPasto = consumo.pasti > 0 && usi >= consumo.pasti;
+      const perTempo = giorniPassati >= consumo.giorni;
+      if (daPasto || perTempo) {
         batch.update(doc(dispensaRef, p.id), { stato: 'consumato' });
         modifiche += 1;
       }
@@ -221,13 +222,6 @@ export default function DispensaScreen({ famigliaId, sezione, setSezione }) {
     setItemSezione(null);
     await updateDoc(doc(dispensaRef, item.id), { conservazione: chiave });
     imparaConservazione(famigliaId, item.nome, chiave).catch(() => {});
-  }
-
-  // Cambia il profilo di consumo (monouso / graduale / scorta) e lo memorizza.
-  async function cambiaProfilo(item, chiave) {
-    setItemSezione(null);
-    await updateDoc(doc(dispensaRef, item.id), { profilo: chiave });
-    imparaProfilo(famigliaId, item.nome, chiave).catch(() => {});
   }
 
   // La dispensa della cucina contiene solo alimenti: i prodotti per la casa
@@ -369,15 +363,12 @@ export default function DispensaScreen({ famigliaId, sezione, setSezione }) {
       <ProdottoPicker
         visible={!!itemSezione}
         nome={itemSezione ? itemSezione.nome : ''}
+        categoria={itemSezione ? itemSezione.categoria : null}
         conservazione={itemSezione
           ? (itemSezione.conservazione || conservazionePer(itemSezione.nome, itemSezione.categoria))
           : null}
-        profilo={itemSezione
-          ? (itemSezione.profilo || profiloPer(itemSezione.nome, itemSezione.categoria))
-          : null}
         accent={mod.accent}
         onConservazione={(k) => cambiaSezione(itemSezione, k)}
-        onProfilo={(k) => cambiaProfilo(itemSezione, k)}
         onChiudi={() => setItemSezione(null)}
       />
     </View>

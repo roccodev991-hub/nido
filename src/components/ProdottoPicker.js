@@ -2,20 +2,20 @@ import { Modal, View, Text, TouchableOpacity, Pressable, StyleSheet } from 'reac
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colors, radius, fonts, shadow } from '../theme';
 import { CONSERVAZIONI } from '../conservazione';
-import { PROFILI, giorniDi } from '../profili';
+import { consumoDi } from '../profili';
 
-// Impostazioni di un prodotto in dispensa: dove lo tieni e come si consuma.
+// Impostazioni di un prodotto in dispensa: dove lo tieni. Come si consuma
+// non è più una scelta — lo decide il file di conoscenza — ma lo diciamo,
+// così il cambio di stato non sembra magia.
 export default function ProdottoPicker({
-  visible, nome, conservazione, profilo, accent,
-  onConservazione, onProfilo, onChiudi,
+  visible, nome, categoria, conservazione, accent, onConservazione, onChiudi,
 }) {
-  const giorni = giorniDi(nome, profilo);
-  // Cosa farà l'app con questo prodotto, detto senza giri di parole.
-  const spiegazione = profilo === 'monouso'
-    ? `Quando il pasto che lo usa è passato — o dopo ~${giorni} giorni — l'app lo segna «Consumato».`
-    : profilo === 'graduale'
-      ? `Dopo ~${giorni} giorni l'app lo segna «Consumato».`
-      : 'L\'app non lo segna mai «Consumato» da sola. Lo segna «Poco» quando stima che stia calando, in base a ogni quanto lo ricompri.';
+  const consumo = consumoDi(nome, categoria);
+  const comeSiConsuma = consumo.tipo === 'scorta'
+    ? 'È una scorta: non finisce con un pasto. Diventa «Poco» quando l’app stima che stia calando, in base a ogni quanto lo ricompri.'
+    : consumo.pasti > 0
+      ? `Un piatto che lo usa ${consumo.pasti === 1 ? 'lo esaurisce' : `× ${consumo.pasti} lo esaurisce`}; comunque dopo ~${consumo.giorni} giorni l’app lo segna «Consumato».`
+      : `L’app lo segna «Consumato» dopo ~${consumo.giorni} giorni: il menu non lo tocca.`;
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onChiudi}>
@@ -54,28 +54,7 @@ export default function ProdottoPicker({
           </View>
           <Text style={s.nota}>“Casa” lo toglie dalla dispensa della cucina.</Text>
 
-          <Text style={[s.label, { marginTop: 16 }]}>Come si consuma</Text>
-          {Object.entries(PROFILI).map(([key, p]) => {
-            const attivo = profilo === key;
-            return (
-              <TouchableOpacity
-                key={key}
-                style={[s.voce, attivo && { backgroundColor: colors.bg }]}
-                onPress={() => onProfilo(key)}
-                activeOpacity={0.7}
-              >
-                <View style={{ flex: 1 }}>
-                  <Text style={[s.voceTxt, attivo && { color: accent, fontFamily: fonts.semibold }]}>
-                    {p.label}
-                  </Text>
-                  <Text style={s.voceNota}>{p.nota}</Text>
-                </View>
-                {attivo && <MaterialCommunityIcons name="check" size={18} color={accent} />}
-              </TouchableOpacity>
-            );
-          })}
-
-          <Text style={s.spiega}>{spiegazione}</Text>
+          <Text style={s.spiega}>{comeSiConsuma}</Text>
         </View>
       </View>
     </Modal>
@@ -106,14 +85,8 @@ const s = StyleSheet.create({
   },
   chipTxt: { fontFamily: fonts.regular, fontSize: 13, color: colors.inkSoft },
   nota: { fontFamily: fonts.regular, fontSize: 12, color: colors.faint, marginTop: 7 },
-  voce: {
-    flexDirection: 'row', alignItems: 'center', gap: 10,
-    paddingVertical: 10, paddingHorizontal: 12, borderRadius: radius.lg,
-  },
-  voceTxt: { fontFamily: fonts.medium, fontSize: 15, color: colors.ink },
-  voceNota: { fontFamily: fonts.regular, fontSize: 12, color: colors.inkSoft, marginTop: 1 },
   spiega: {
     fontFamily: fonts.regular, fontSize: 12, color: colors.inkSoft,
-    marginTop: 12, lineHeight: 18,
+    marginTop: 16, lineHeight: 18,
   },
 });

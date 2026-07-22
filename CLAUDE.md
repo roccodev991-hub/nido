@@ -52,6 +52,8 @@ App.js                     login, famiglia, menu ☰ moduli, dialogo famiglia, e
                            `vaiA(modulo, sezione)` → la home apre il punto esatto
 firestore.rules            regole di sicurezza (da deployare a parte)
 eas.json                   profili di build: `apk` (APK sideload) e `production` (AAB)
+                           ⚠️ `appVersionSource: local` → alzare `android.versionCode`
+                           in app.json a ogni build, o Android rifiuta l'installazione
 strumenti/icona.mjs        generatore dell'icona (Node puro, nessuna dipendenza)
 firebase.json/.firebaserc  Firebase Hosting per la web app (vedi "Web app")
 public/                    template HTML + manifest + icone della web app
@@ -86,7 +88,7 @@ src/screens/
 |---|---|
 | `src/catalogo.js` | 258 prodotti → reparto (frutta-verdura, latticini, …) + `categoriaDi()` + `perSchermo()` |
 | `src/conservazione.js` | 76 prodotti → frigo/dispensa/freezer (dall'Excel dell'utente) |
-| `src/profili.js` | profilo di consumo: monouso / graduale / scorta + giorni stimati |
+| `src/profili.js` | `consumoDi()` → come si consuma: `{tipo:'fresco',pasti,giorni}` o `{tipo:'scorta'}` |
 | `src/stime.js` | giorni stimati prima che una scorta finisca (cold start) |
 | `src/piattiSeed.js` | 29 piatti: il ricettario vero, travasato dall'app il 2026-07-20 |
 | `src/settimana.js` | `lunedi()`, `ymd()`, `inizioOggi()` |
@@ -139,6 +141,10 @@ quest'ordine: *Oggi* (eventi di oggi) · *Oggi si mangia* (slot di oggi da `menu
 (conteggio + primi nomi) · *Sta finendo* (dispensa e casa a Poco/Finito non già in lista).
 Gli eventi stanno **in cima** perché sono il blocco più raro: quasi sempre assente, quindi
 quando compare è una notizia — e un concerto stasera cambia il senso del menu qui sotto.
+
+La home **riassume, non ricopia**: ogni blocco ha un tetto di righe e poi rimanda al
+modulo (`MAX_FACCENDE`, `MAX_FINISCONO`; la lista spesa mostra il conteggio e i primi
+nomi). Senza, in una giornata piena diventava un lenzuolo da scorrere.
 Un blocco senza dati **non compare**: meglio quattro blocchi veri che sei mezzi vuoti, ed
 è il motivo per cui Spese ed Eventi non ci sono finché sono segnaposto.
 Due azioni si fanno da qui — spuntare una faccenda e mettere in lista ciò che sta finendo —
@@ -157,13 +163,17 @@ con `vaiA(modulo, sezione)`.
   **casa sono esclusi** da qui (restano nella lista spesa; troveranno posto altrove).
 - Stati: **C'è → Poco → Finito** (ciclo al tocco) + **Consumato** (assegnato dall'app,
   un tocco lo riporta a "C'è").
-- **Tre profili di consumo**, correggibili dal pannello del prodotto:
-  - `monouso` (carne, pesce): il pasto pianificato passato lo segna **Consumato**; se non
-    pianificato, dopo ~4 giorni.
-  - `graduale` (frutta, verdura): nessun pasto lo consuma; **Consumato** dopo ~14 giorni
-    (30 per patate, cipolle, aglio, carote, zucca, mele, agrumi).
-  - `scorta` (tutto il resto): mai "Consumato"; diventa **Poco** quando l'app stima che
-    stia calando.
+- **Come si consuma** (`consumoDi()` in `profili.js`), **non più scelto a mano**:
+  - `fresco` con `pasti > 0`: dopo **quanti pasti pianificati** lo usano lo segna
+    **Consumato** (zucchine/mozzarella 1; cicoria/insalata 2; carne-pesce 1). `giorni` è
+    la rete di sicurezza se non è in un menu.
+  - `fresco` con `pasti: 0`: il menu **non lo tocca**, esce solo per tempo — frutta da
+    mangiare (6/20 gg) e scorta fresca di casa (patate, cipolla, agrumi… 30 gg).
+  - `scorta`: mai "Consumato"; diventa **Poco** quando l'app stima che stia calando —
+    formaggi stagionati, scatolame (tonno, ceci), pasta, pane, uova, burro.
+  La classificazione dei freschi noti è la mappa `FRESCHI`; i default vengono dal reparto.
+  Il pannello del prodotto **non fa più scegliere il profilo**: mostra solo dove lo tieni
+  e una riga che spiega come si consuma (letta da `consumoDi`).
 - Quando una scorta diventa "Poco": **prima il ritmo imparato** dai riacquisti
   (`intervalloMedio`), altrimenti **usi nei menu** (soglia 6) e **tempo stimato** come rete.
 - ⚠️ **Non usare mai la parola "scadenza"** nei testi utente: l'app non sa se qualcosa è
@@ -349,7 +359,7 @@ riuscita" che c'era già. Degrada da sé, è una funzione dell'amministratore.
   mancavano sono in `catalogo.js`; rinominati gli inglesismi e i refusi (Mustard→Senape,
   Tomato paste→Concentrato di pomodoro, Corn tortillas→Tortillas, Temphe→Tempeh,
   Tonnerelli→Tonnarelli, Greens→Verdure a foglia). Le due correzioni fatte dall'app sono
-  nei file statici: latte → profilo `graduale` (nuova lista `GRADUALI` in `profili.js`),
+  nei file statici (poi il modello dei profili è stato rifatto, vedi Dispensa) e
   pesce surgelato → `freezer`. `importaPiattiSeed()` ora rispetta tipo/impegno/stagione
   del seed invece di azzerarli.
 - **Gli ingredienti dei piatti non si suggeriscono in lista.** I suggerimenti pescano solo

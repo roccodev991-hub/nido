@@ -8,7 +8,6 @@ import {
 import { db } from './firebase';
 import { normalizza, categoriaDi, CATEGORIE } from './catalogo';
 import { conservazioneDi, CONSERVAZIONI } from './conservazione';
-import { profiloDi, PROFILI } from './profili';
 
 export function frequentiRef(famigliaId) {
   return collection(db, 'famiglie', famigliaId, 'frequenti');
@@ -49,15 +48,8 @@ export function useCategorie(famigliaId) {
     return conservazioneDi(nome || '', categoria);
   }, [mappa]);
 
-  // Come si consuma: prima la tua correzione, poi il profilo di partenza.
-  const profiloPer = useMemo(() => (nome, categoria) => {
-    const f = mappa.get(normalizza(nome || ''));
-    if (f && f.profilo && PROFILI[f.profilo]) return f.profilo;
-    return profiloDi(nome || '', categoria);
-  }, [mappa]);
-
   return {
-    frequenti, pronto, categoriaPer, conservazionePer, profiloPer,
+    frequenti, pronto, categoriaPer, conservazionePer,
   };
 }
 
@@ -125,17 +117,6 @@ export async function imparaConservazione(famigliaId, nome, conservazione) {
   await setDoc(
     doc(db, 'famiglie', famigliaId, 'frequenti', id),
     { nome, conservazione },
-    { merge: true },
-  );
-}
-
-// Memorizza come si consuma un prodotto (monouso, graduale, scorta).
-export async function imparaProfilo(famigliaId, nome, profilo) {
-  const id = idDa(nome);
-  if (!id) return;
-  await setDoc(
-    doc(db, 'famiglie', famigliaId, 'frequenti', id),
-    { nome, profilo },
     { merge: true },
   );
 }
