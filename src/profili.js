@@ -82,6 +82,26 @@ const FRESCHI = {
   provola: { pasti: 0, giorni: 10 },
 };
 
+// Nomi composti che il match per parola sbaglierebbe: "latte di mandorla"
+// aggancerebbe "latte" (fresco 10gg) ma è UHT e dura mesi; "tonno fresco"
+// aggancerebbe "tonno" (scatolame) ma è pesce da mangiare subito.
+// Queste voci vincono su tutto: 'scorta' oppure { pasti, giorni }.
+const ECCEZIONI = {
+  'latte di mandorla': 'scorta',
+  'latte di soia': 'scorta',
+  'latte di avena': 'scorta',
+  'latte di riso': 'scorta',
+  'latte di cocco': 'scorta',
+  'latte condensato': 'scorta',
+  'frutta secca': 'scorta',
+  'pomodori secchi': 'scorta',
+  'pomodoro secco': 'scorta',
+  'funghi secchi': 'scorta',
+  'tonno fresco': { pasti: 1, giorni: 2 },
+  'insalata di mare': { pasti: 1, giorni: 3 },
+  'insalata di riso': { pasti: 1, giorni: 3 },
+};
+
 // Salumi e conserve: stanno nel reparto carne/pesce ma durano come scorte.
 const CONSERVATI = [
   'tonno', 'prosciutto', 'salame', 'bresaola', 'speck', 'mortadella', 'wurstel',
@@ -100,6 +120,13 @@ function contieneParola(nome, lista) {
 // Prima i freschi noti, poi un default ragionevole dal reparto.
 export function consumoDi(nome, categoria) {
   const n = normalizza(nome || '');
+
+  // Prima le eccezioni sul nome intero: sono lì apposta per battere
+  // il match per parola che segue.
+  const ecc = ECCEZIONI[n];
+  if (ecc === 'scorta') return { tipo: 'scorta' };
+  if (ecc) return { tipo: 'fresco', ...ecc };
+
   if (FRESCHI[n]) return { tipo: 'fresco', ...FRESCHI[n] };
   for (const parola of n.split(' ')) {
     if (FRESCHI[parola]) return { tipo: 'fresco', ...FRESCHI[parola] };

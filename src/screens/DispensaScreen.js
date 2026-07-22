@@ -115,7 +115,11 @@ export default function DispensaScreen({ famigliaId, sezione, setSezione }) {
       const consumo = consumoDi(p.nome, p.categoria);
       const nome = normalizza(p.nome);
       const rif = dataRiferimento(p);
-      const giorniPassati = rif ? (oggi - rif) / 86400000 : 0;
+      // Giorni di CALENDARIO, non frazioni: comprato ieri sera = 1 giorno fa.
+      // Mezzanotte + arrotondamento assorbono anche l'ora legale,
+      // come già fa giorniTra() in ricorrenza.js.
+      const mezzanotteRif = rif ? new Date(rif).setHours(0, 0, 0, 0) : null;
+      const giorniPassati = rif ? Math.round((oggi - mezzanotteRif) / 86400000) : 0;
       // pasti che hanno usato il prodotto DOPO che l'hai comprato
       const usi = rif
         ? pastiPassati.filter((m) => m.quando > rif && m.ingredienti.has(nome)).length
@@ -140,6 +144,9 @@ export default function DispensaScreen({ famigliaId, sezione, setSezione }) {
 
       // Fresco → "Consumato": abbastanza pasti l'hanno usato (con pasti > 0),
       // oppure è passato il tempo di rete. `pasti: 0` = il menu non lo tocca.
+      // Senza data di riferimento non si consuma niente, di proposito: ogni
+      // documento nasce con `creato`, quindi il caso è solo la latenza di
+      // serverTimestamp (si risolve al sync) — meglio prudenti che a caso.
       if (!rif) continue;
       const daPasto = consumo.pasti > 0 && usi >= consumo.pasti;
       const perTempo = giorniPassati >= consumo.giorni;
