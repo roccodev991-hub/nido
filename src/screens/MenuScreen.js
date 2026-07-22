@@ -672,7 +672,7 @@ export default function MenuScreen({ famigliaId, sezione, setSezione }) {
                 <FlatList
                   data={piattiFiltrati}
                   keyExtractor={(i) => i.id}
-                  style={{ maxHeight: 300 }}
+                  style={{ maxHeight: 300, flexShrink: 1 }}
                   keyboardShouldPersistTaps="handled"
                   renderItem={({ item }) => {
                     const et = [
@@ -934,6 +934,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.card,
     borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl,
     padding: 20, paddingBottom: 30, ...shadow.float,
+    maxHeight: '100%', // mai piu alto dello spazio sopra la tastiera
   },
   foglioHead: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',

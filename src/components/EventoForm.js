@@ -79,7 +79,7 @@ export default function EventoForm({
             </TouchableOpacity>
           </View>
 
-          <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+          <ScrollView style={{ flexShrink: 1 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
             <TextInput
               style={s.campoNome}
               placeholder="Cosa? (es. concerto dei Verdena)"

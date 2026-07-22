@@ -110,7 +110,7 @@ export default function PiattoForm({
             </TouchableOpacity>
           </View>
 
-          <ScrollView style={{ maxHeight: 440 }} showsVerticalScrollIndicator={false}>
+          <ScrollView style={{ maxHeight: 440, flexShrink: 1 }} showsVerticalScrollIndicator={false}>
             <TextInput
               style={s.campoNome}
               placeholder="Nome del piatto (es. Bistecca e cicoria)"
@@ -259,6 +259,9 @@ const s = StyleSheet.create({
     backgroundColor: colors.card,
     borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl,
     padding: 20, paddingBottom: 28, ...shadow.float,
+    // Mai piu alto dello spazio sopra la tastiera: senza questo, il foglio
+    // alzato in blocco spinge la parte alta (il campo nome) fuori schermo.
+    maxHeight: '100%',
   },
   head: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
