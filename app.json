@@ -2,7 +2,7 @@
   "expo": {
     "name": "Nido",
     "slug": "spesa-famiglia",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -12,7 +12,7 @@
     },
     "android": {
       "package": "com.pisapia.nido",
-      "versionCode": 3,
+      "versionCode": 4,
       "adaptiveIcon": {
         "backgroundColor": "#2E5B3E",
         "foregroundImage": "./assets/android-icon-foreground.png",
