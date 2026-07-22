@@ -33,6 +33,8 @@ const FRESCHI = {
   pomodorini: { pasti: 2, giorni: 14 },
   sedano: { pasti: 2, giorni: 14 },
   bietole: { pasti: 2, giorni: 14 },
+  cetriolo: { pasti: 2, giorni: 10 }, cetrioli: { pasti: 2, giorni: 10 },
+  rucola: { pasti: 2, giorni: 7 },
   porri: { pasti: 2, giorni: 14 }, porro: { pasti: 2, giorni: 14 },
   spinaci: { pasti: 2, giorni: 14 },
   asparagi: { pasti: 2, giorni: 14 },

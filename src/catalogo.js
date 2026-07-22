@@ -32,6 +32,7 @@ const PRODOTTI = {
     'patata dolce', 'zenzero', 'verdure a foglia', 'bietole',
     // generici: usali nei piatti quando l'ingrediente è intercambiabile
     'verdure', 'verdura', 'frutta', 'insalata mista', 'contorno',
+    'cetriolo', 'cetrioli', 'rucola',
   ],
   latticini: [
     'latte', 'yogurt', 'burro', 'formaggio', 'parmigiano', 'mozzarella', 'ricotta', 'uova',

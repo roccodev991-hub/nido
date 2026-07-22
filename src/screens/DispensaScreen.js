@@ -112,7 +112,11 @@ export default function DispensaScreen({ famigliaId, sezione, setSezione }) {
     let modifiche = 0;
     for (const p of prodotti) {
       if ((p.stato || 'pieno') !== 'pieno') continue;
-      const consumo = consumoDi(p.nome, p.categoria);
+      // Il reparto si legge da categoriaPer (correzioni imparate + catalogo),
+      // non dalla foto salvata sul documento: se correggi il reparto di un
+      // prodotto già in dispensa, il consumo deve accorgersene.
+      const categoria = categoriaPer(p.nome);
+      const consumo = consumoDi(p.nome, categoria);
       const nome = normalizza(p.nome);
       const rif = dataRiferimento(p);
       // Giorni di CALENDARIO, non frazioni: comprato ieri sera = 1 giorno fa.
@@ -134,7 +138,7 @@ export default function DispensaScreen({ famigliaId, sezione, setSezione }) {
           : null;
         const inEsaurimento = ritmo
           ? giorniPassati >= ritmo
-          : usi >= SOGLIA_USI || giorniPassati >= stimaGiorni(p.nome, p.categoria);
+          : usi >= SOGLIA_USI || giorniPassati >= stimaGiorni(p.nome, categoria);
         if (inEsaurimento && rif) {
           batch.update(doc(dispensaRef, p.id), { stato: 'poco' });
           modifiche += 1;
