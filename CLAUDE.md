@@ -175,6 +175,9 @@ con `vaiA(modulo, sezione)`.
   - `scorta`: mai "Consumato"; diventa **Poco** quando l'app stima che stia calando —
     formaggi stagionati, scatolame (tonno, ceci), pasta, pane, uova, burro.
   La classificazione dei freschi noti è la mappa `FRESCHI`; i default vengono dal reparto.
+  La mappa `ECCEZIONI` (nome intero, vince su tutto) copre i composti che il match per
+  parola sbaglierebbe: "latte di mandorla"≠latte, "tonno fresco"≠tonno in scatola,
+  "frutta secca"≠frutta. Se compare un nuovo caso storto, si aggiunge lì.
   Il pannello del prodotto **non fa più scegliere il profilo**: mostra solo dove lo tieni
   e una riga che spiega come si consuma (letta da `consumoDi`).
 - Quando una scorta diventa "Poco": **prima il ritmo imparato** dai riacquisti
@@ -420,4 +423,9 @@ riuscita" che c'era già. Degrada da sé, è una funzione dell'amministratore.
   documenti in `dispensa`. Firestore non sa fare confronti senza maiuscole: serve salvare
   una `chiave` normalizzata sui documenti e interrogare quella. Da fare col travaso.
 - **Quantità**: salvate sui piatti importati ma non usate da nessuna logica.
+- **Test tabellari versionati** per ricorrenza.js / profili.js / spese.js: oggi le
+  verifiche vivono in script usa-e-getta nello scratchpad; andrebbero portati in
+  `strumenti/` per rifarli a ogni modifica. (Suggerito anche dalla review esterna.)
+- **Avanzi sui piatti** (campo + Proponi che mette "Avanzi" il pasto dopo): deciso,
+  non ancora implementato — in attesa che il nuovo modello consumi sia testato sul campo.
 - Idee: statistiche, quantità in lista, notifiche.
