@@ -45,6 +45,7 @@ export default function PiattoForm({
   const [tipo, setTipo] = useState(null);
   const [impegno, setImpegno] = useState(null);
   const [stagione, setStagione] = useState('sempre');
+  const [avanzi, setAvanzi] = useState(false);
   const [ingredienti, setIngredienti] = useState([]);
   const [ingr, setIngr] = useState('');
   const [tags, setTags] = useState([]);
@@ -58,6 +59,7 @@ export default function PiattoForm({
     setTipo(piatto ? piatto.tipo || null : null);
     setImpegno(piatto ? piatto.impegno || null : null);
     setStagione(piatto ? piatto.stagione || 'sempre' : 'sempre');
+    setAvanzi(piatto ? !!piatto.avanzi : false);
     setIngredienti(piatto ? [...(piatto.ingredienti || [])] : []);
     setTags(piatto ? [...(piatto.tags || [])] : []);
     setIngr('');
@@ -85,6 +87,7 @@ export default function PiattoForm({
       tipo: tipo || null,
       impegno: impegno || null,
       stagione: stagione || 'sempre',
+      avanzi,
       ingredienti,
       tags,
     });
@@ -147,6 +150,25 @@ export default function PiattoForm({
               accent={accent}
               soft={soft}
             />
+
+            {/* Se ne avanza, "Proponi" può mettere «Avanzi» nel pasto dopo. */}
+            <View style={{ marginBottom: 14 }}>
+              <Text style={s.label}>Avanzi</Text>
+              <TouchableOpacity
+                style={[s.chip, s.chipAvanzi, avanzi && { backgroundColor: soft, borderColor: accent }]}
+                onPress={() => setAvanzi((v) => !v)}
+                activeOpacity={0.7}
+              >
+                <MaterialCommunityIcons
+                  name="recycle-variant"
+                  size={15}
+                  color={avanzi ? accent : colors.inkSoft}
+                />
+                <Text style={[s.chipTxt, avanzi && { color: accent, fontFamily: fonts.semibold }]}>
+                  Di solito ne avanza per un altro pasto
+                </Text>
+              </TouchableOpacity>
+            </View>
 
             <Text style={s.label}>Ingredienti</Text>
             <View style={s.addRow}>
@@ -256,6 +278,9 @@ const s = StyleSheet.create({
     borderWidth: 1, borderColor: colors.line, backgroundColor: colors.card,
   },
   chipTxt: { fontFamily: fonts.regular, fontSize: 13, color: colors.inkSoft },
+  chipAvanzi: {
+    flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start',
+  },
   addRow: {
     flexDirection: 'row', alignItems: 'center', gap: 8,
     backgroundColor: colors.bg, borderRadius: radius.md,

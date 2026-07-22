@@ -366,12 +366,23 @@ export default function MenuScreen({ famigliaId, sezione, setSezione }) {
 
     const proposta = {};
     let nonRiempiti = 0;
+    // Un piatto che "fa avanzi" lascia la scia: il pasto subito dopo, se è
+    // vuoto, diventa «Avanzi» invece di un piatto nuovo. Se il pasto dopo è
+    // già occupato, la scia si perde (gli avanzi non scavalcano).
+    let avanziInArrivo = false;
 
     for (const g of giorni) {
       const feriale = g.i <= 3; // lun–gio
       for (const p of PASTI) {
         const key = slotKey(g.i, p.key);
-        if (slots[key]) continue; // occupato (piatto, avanzi o fuori): non si tocca
+        if (slots[key]) { avanziInArrivo = false; continue; } // occupato: non si tocca
+
+        if (avanziInArrivo) {
+          proposta[key] = { tipo: 'avanzi' };
+          avanziInArrivo = false;
+          continue;
+        }
+
         const candidati = piatti.filter(
           (pt) => !usati.has(normalizza(pt.nome)) && adatto(pt, p.key),
         );
@@ -402,6 +413,7 @@ export default function MenuScreen({ famigliaId, sezione, setSezione }) {
         };
         usati.add(normalizza(scelto.nome));
         if (scelto.tipo) contaTipi[scelto.tipo] = (contaTipi[scelto.tipo] || 0) + 1;
+        if (scelto.avanzi) avanziInArrivo = true;
       }
     }
     return { proposta, nonRiempiti };
@@ -766,7 +778,14 @@ export default function MenuScreen({ famigliaId, sezione, setSezione }) {
                     {righe.map((r) => (
                       <View key={r.p.key} style={s.antRiga}>
                         <Text style={s.antPasto}>{r.p.label}</Text>
-                        <Text style={s.antNome} numberOfLines={1}>{r.v.nome}</Text>
+                        {r.v.tipo === 'avanzi' ? (
+                          <View style={s.antAvanzi}>
+                            <MaterialCommunityIcons name="recycle-variant" size={14} color={mod.accent} />
+                            <Text style={[s.antNome, { color: mod.accent }]}>Avanzi</Text>
+                          </View>
+                        ) : (
+                          <Text style={s.antNome} numberOfLines={1}>{r.v.nome}</Text>
+                        )}
                       </View>
                     ))}
                   </View>
@@ -890,6 +909,7 @@ const s = StyleSheet.create({
   antRiga: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 3 },
   antPasto: { width: 58, fontFamily: fonts.regular, fontSize: 13, color: colors.inkSoft },
   antNome: { flex: 1, fontFamily: fonts.medium, fontSize: 15, color: colors.ink },
+  antAvanzi: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 5 },
   antNota: {
     fontFamily: fonts.regular, fontSize: 13, color: colors.inkSoft,
     marginTop: 4, marginBottom: 8, lineHeight: 19,

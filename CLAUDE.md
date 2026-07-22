@@ -114,7 +114,7 @@ Tutto sotto `famiglie/{famigliaId}/…` (regole: solo i membri della famiglia).
 | `spesa` | `nome`, `categoria`, `aggiuntoDa`, `creato`, + se generato dal menu: `piatto`, `daMenu` (= chiave settimana) |
 | `dispensa` | `nome`, `categoria`, `conservazione`, `profilo`, `stato`, `compratoIl`, `creato` |
 | `frequenti/{nomeNormalizzato}` | `nome`, `categoria`, `conservazione`, `profilo`, `conteggio`, `ultimo`, `intervalloMedio`, `intervalliVisti` |
-| `piatti` | `nome`, `occasione`, `tipo`, `impegno`, `stagione`, `tags[]`, `ingredienti[{nome,qta?,unita?}]` |
+| `piatti` | `nome`, `occasione`, `tipo`, `impegno`, `stagione`, `avanzi` (bool), `tags[]`, `ingredienti[{nome,qta?,unita?}]` |
 | `menuSettimana/{lunedì AAAA-MM-GG}` | `slots{ g{0-6}_{pranzo\|cena} }`, `ultimaGenerazione{firma,quando}` |
 | `tasks` | `nome`, `ricorrenza`, `ogni`, `giorniSettimana[]`, `ancora`, `origine`, `scadenza`, `storico[{chi,quando}]`, `ultimoFattoDa`, `primaDi` (per l'annulla) |
 | `movimenti` | `tipo` (`spesa`\|`rimborso`), `importo`, `quando`, `pagatoDa`, + spesa: `descrizione`, `categoria`, `condivisa` · + rimborso: `a` |
@@ -204,6 +204,10 @@ con `vaiA(modulo, sezione)`.
   nella settimana + occasione. Preferenze (punteggio): ingredienti già in dispensa,
   impegno adatto al giorno (veloci nei feriali), varietà di tipo, stagione.
   Anteprima con "Rigenera" prima di applicare.
+- **Avanzi**: un piatto può dichiarare `avanzi: true` nel form ("di solito ne avanza").
+  Quando Proponi lo sceglie, il pasto **immediatamente successivo**, se vuoto, diventa
+  «Avanzi» invece di un piatto nuovo; se è occupato la scia si perde (gli avanzi non
+  scavalcano). Vale solo per le scelte di Proponi, non per i piatti messi a mano.
 
 **Task** — due sezioni: ✅ Faccende · 🧴 Casa.
 
@@ -432,6 +436,4 @@ riuscita" che c'era già. Degrada da sé, è una funzione dell'amministratore.
 - **Test tabellari versionati** per ricorrenza.js / profili.js / spese.js: oggi le
   verifiche vivono in script usa-e-getta nello scratchpad; andrebbero portati in
   `strumenti/` per rifarli a ogni modifica. (Suggerito anche dalla review esterna.)
-- **Avanzi sui piatti** (campo + Proponi che mette "Avanzi" il pasto dopo): deciso,
-  non ancora implementato — in attesa che il nuovo modello consumi sia testato sul campo.
 - Idee: statistiche, quantità in lista, notifiche.
